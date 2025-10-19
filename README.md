@@ -1,7 +1,7 @@
 # Orange ShortUrl
 
-<div align="center">
-  <img src="shorturl-frontend/public/logo.svg" alt="Orange ShortUrl Logo" width="180">
+<div>
+  <img src="shorturl-frontend/pubilc/logo.svg" alt="Orange ShortUrl Logo" width="180">
 
   <p>🍊 简洁、高效、易用的短链接系统</p>
 > 🔗 **Orange ShortUrl** 是一个开箱即用的、功能完整的短链接系统。它基于 **Spring Boot** + **Vue 3** + **TailwindCSS** 构建，支持短链生成、访问统计、用户认证、链接管理等功能，让你可以快速搭建自己的短链接服务。
