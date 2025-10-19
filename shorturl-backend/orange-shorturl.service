@@ -1,0 +1,75 @@
+# Orange ShortUrl Backend - Systemd Service Unit 文件
+# 
+# 使用方法：
+# 1. 将此文件复制到 /etc/systemd/system/ 目录
+#    sudo cp orange-shorturl.service /etc/systemd/system/
+#
+# 2. 修改文件中的路径和用户信息
+#    sudo vim /etc/systemd/system/orange-shorturl.service
+#
+# 3. 重新加载 systemd
+#    sudo systemctl daemon-reload
+#
+# 4. 启动服务
+#    sudo systemctl start orange-shorturl
+#
+# 5. 设置开机自启
+#    sudo systemctl enable orange-shorturl
+#
+# 6. 查看服务状态
+#    sudo systemctl status orange-shorturl
+#
+# 7. 查看日志
+#    sudo journalctl -u orange-shorturl -f
+
+[Unit]
+Description=Orange ShortUrl Backend Service
+Documentation=https://github.com/yourusername/orange-shorturl
+After=network.target mysql.service redis.service
+Wants=mysql.service redis.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+
+# 工作目录（修改为实际路径）
+WorkingDirectory=/opt/orange-shorturl
+
+# JAR 包路径（修改为实际路径）
+ExecStart=/usr/bin/java \
+    -Xms256m \
+    -Xmx512m \
+    -XX:+UseG1GC \
+    -XX:MaxGCPauseMillis=200 \
+    -Djava.security.egd=file:/dev/./urandom \
+    -Dspring.profiles.active=prod \
+    -jar /opt/orange-shorturl/shorturl-backend-1.0.0.jar
+
+# 优雅停止（等待 30 秒）
+ExecStop=/bin/kill -s TERM $MAINPID
+TimeoutStopSec=30
+
+# 重启策略
+Restart=on-failure
+RestartSec=10
+
+# 日志配置
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=orange-shorturl
+
+# 安全加固
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/orange-shorturl/logs
+
+# 资源限制
+LimitNOFILE=65535
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target
+

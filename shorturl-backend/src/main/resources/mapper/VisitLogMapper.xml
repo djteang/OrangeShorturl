@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shorturl.mapper.VisitLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.shorturl.entity.VisitLog">
+        <id column="id" property="id"/>
+        <result column="short_code" property="shortCode"/>
+        <result column="visit_time" property="visitTime"/>
+        <result column="ip_address" property="ipAddress"/>
+        <result column="user_agent" property="userAgent"/>
+        <result column="referer" property="referer"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.shorturl.entity.VisitLog">
+        INSERT INTO visit_log (short_code, visit_time, ip_address, user_agent, referer)
+        VALUES (#{shortCode}, #{visitTime}, #{ipAddress}, #{userAgent}, #{referer})
+    </insert>
+
+    <select id="selectRecentVisits" resultMap="BaseResultMap">
+        SELECT * FROM visit_log
+        WHERE short_code = #{shortCode}
+        ORDER BY visit_time DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectDailyStats" resultType="map">
+        SELECT DATE_FORMAT(visit_time, '%Y-%m-%d') as date,
+               COUNT(*) as count
+        FROM visit_log
+        WHERE short_code = #{shortCode}
+          AND visit_time >= DATE_SUB(NOW(), INTERVAL #{days} DAY)
+        GROUP BY DATE_FORMAT(visit_time, '%Y-%m-%d')
+        ORDER BY date DESC
+    </select>
+
+    <select id="selectByUserIdWithPage" resultMap="BaseResultMap">
+        SELECT vl.*
+        FROM visit_log vl
+        INNER JOIN url_mapping um ON vl.short_code = um.short_code
+        WHERE um.user_id = #{userId}
+        <if test="shortCode != null and shortCode != ''">
+            AND vl.short_code = #{shortCode}
+        </if>
+        ORDER BY vl.visit_time DESC
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="countByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM visit_log vl
+        INNER JOIN url_mapping um ON vl.short_code = um.short_code
+        WHERE um.user_id = #{userId}
+        <if test="shortCode != null and shortCode != ''">
+            AND vl.short_code = #{shortCode}
+        </if>
+    </select>
+
+</mapper>
+

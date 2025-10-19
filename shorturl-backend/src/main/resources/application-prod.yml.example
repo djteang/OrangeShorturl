@@ -1,0 +1,70 @@
+# 生产环境配置示例
+# 使用方法：
+# 1. 复制此文件为 application-prod.yml
+# 2. 修改下面的配置为实际的生产环境配置
+# 3. 启动时指定 profile: java -jar app.jar --spring.profiles.active=prod
+
+# Server Configuration
+server:
+  port: 8080
+
+# MySQL Configuration
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://your-db-host:3306/shorturl?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: your-username
+    password: your-password
+
+  # Mail Configuration
+  mail:
+    host: smtp.example.com
+    port: 465
+    username: your-email@example.com
+    password: your-email-password
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            port: 465
+
+  # Redis Configuration
+  redis:
+    host: your-redis-host
+    port: 6379
+    password: your-redis-password
+    database: 0
+    timeout: 3000
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+
+# Application Configuration
+shorturl:
+  domain: https://your-domain.com  # 生产环境域名
+  frontend-url: https://your-domain.com  # 前端生产环境地址
+
+# OAuth Configuration
+oauth:
+  # 前端URL配置（生产环境）
+  frontend:
+    callback-url: https://your-domain.com/oauth-callback  # OAuth回调后跳转的前端页面
+    login-url: https://your-domain.com/login  # 登录失败时跳转的前端页面
+  
+  # Linux.do OAuth配置
+  linux-do:
+    client-id: your-linuxdo-client-id
+    client-secret: your-linuxdo-client-secret
+    redirect-uri: https://your-domain.com/api/auth/oauth2/linux-do/callback
+    authorize-url: https://connect.linux.do/oauth2/authorize
+    token-url: https://connect.linux.do/oauth2/token
+    user-info-url: https://connect.linux.do/api/user
+

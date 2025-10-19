@@ -1,0 +1,58 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="256" cy="256" r="240" fill="#FFF5E6"/>
+  
+  <!-- 外层装饰圆 -->
+  <circle cx="256" cy="256" r="220" fill="url(#orangeGradient)" opacity="0.1"/>
+  
+  <!-- 渐变定义 -->
+  <defs>
+    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8C42;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#45A049;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 橙子主体 -->
+  <circle cx="256" cy="280" r="140" fill="url(#orangeGradient)"/>
+  
+  <!-- 橙子高光 -->
+  <ellipse cx="220" cy="240" rx="40" ry="50" fill="#FFAA66" opacity="0.4"/>
+  
+  <!-- 橙子纹理 -->
+  <path d="M 256 140 Q 256 200, 256 280 Q 256 360, 256 420" stroke="#FF8C42" stroke-width="3" fill="none" opacity="0.3"/>
+  <path d="M 180 200 Q 240 240, 256 280 Q 272 320, 332 360" stroke="#FF8C42" stroke-width="2" fill="none" opacity="0.3"/>
+  <path d="M 332 200 Q 272 240, 256 280 Q 240 320, 180 360" stroke="#FF8C42" stroke-width="2" fill="none" opacity="0.3"/>
+  
+  <!-- 叶子 -->
+  <ellipse cx="256" cy="120" rx="30" ry="50" fill="url(#leafGradient)" transform="rotate(-15 256 120)"/>
+  <ellipse cx="286" cy="110" rx="25" ry="45" fill="url(#leafGradient)" transform="rotate(20 286 110)"/>
+  
+  <!-- 叶子叶脉 -->
+  <line x1="256" y1="90" x2="256" y2="150" stroke="#2E7D32" stroke-width="2" opacity="0.5"/>
+  <line x1="286" y1="80" x2="286" y2="135" stroke="#2E7D32" stroke-width="1.5" opacity="0.5"/>
+  
+  <!-- 链接符号（简化的链条） -->
+  <g transform="translate(160, 300)">
+    <!-- 左边的链环 -->
+    <ellipse cx="0" cy="0" rx="25" ry="20" fill="none" stroke="#FFFFFF" stroke-width="8" opacity="0.9"/>
+    
+    <!-- 右边的链环 -->
+    <ellipse cx="50" cy="0" rx="25" ry="20" fill="none" stroke="#FFFFFF" stroke-width="8" opacity="0.9"/>
+    
+    <!-- 中间连接 -->
+    <line x1="15" y1="-8" x2="35" y2="-8" stroke="#FFFFFF" stroke-width="8" opacity="0.9"/>
+    <line x1="15" y1="8" x2="35" y2="8" stroke="#FFFFFF" stroke-width="8" opacity="0.9"/>
+  </g>
+  
+  <!-- 文字 "O" -->
+  <text x="256" y="480" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="url(#orangeGradient)" text-anchor="middle">
+    Orange
+  </text>
+</svg>
+

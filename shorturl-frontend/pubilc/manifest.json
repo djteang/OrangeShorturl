@@ -1,0 +1,40 @@
+{
+  "name": "Orange ShortUrl",
+  "short_name": "Orange短链",
+  "description": "简洁、高效、易用的短链接系统",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF5E6",
+  "theme_color": "#FF6B35",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "utilities",
+    "productivity"
+  ],
+  "screenshots": [
+    {
+      "src": "/screen1.png",
+      "type": "image/png",
+      "sizes": "1920x1080"
+    },
+    {
+      "src": "/screen2.png",
+      "type": "image/png",
+      "sizes": "1920x1080"
+    }
+  ]
+}
+

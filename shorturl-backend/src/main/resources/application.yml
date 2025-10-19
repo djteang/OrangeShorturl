@@ -1,0 +1,77 @@
+# Server Configuration
+server:
+  port: 9003
+
+# MySQL Configuration
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://ip:3306/shorturl?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: password
+
+  # Mail Configuration
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: mail.com
+    password: code
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            port: 465
+
+  # Jackson Configuration
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  # Redis Configuration
+  redis:
+    host: ip
+    port: 6379
+    password: password
+    database: 0
+    timeout: 3000
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+
+# MyBatis Configuration
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.shorturl.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# Application Configuration
+shorturl:
+  domain: https://orange-shorturl.czdgg.top
+  frontend-url: https://orange-shorturl.czdgg.top
+
+# OAuth Configuration - Linux.do
+oauth:
+  # 前端URL配置
+  frontend:
+    callback-url: https://orange-shorturl.czdgg.top/oauth-callback  # OAuth回调后跳转的前端页面
+    login-url: https://orange-shorturl.czdgg.top/login  # 登录失败时跳转的前端页面
+  
+  # Linux.do OAuth配置
+  linux-do:
+    client-id: id
+    client-secret: secret
+    redirect-uri: https://orange-shorturl.czdgg.top/api/auth/oauth2/linux-do/callback
+    authorize-url: https://connect.linux.do/oauth2/authorize
+    token-url: https://connect.linux.do/oauth2/token
+    user-info-url: https://connect.linux.do/api/user
+

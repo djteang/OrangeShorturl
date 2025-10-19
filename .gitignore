@@ -1,0 +1,296 @@
+# ============================================
+# 🍊 Orange ShortUrl - Git 忽略文件配置
+# ============================================
+
+# ==================== 环境变量和敏感信息 ====================
+.env
+.env.local
+.env.*.local
+*.env
+
+# 生产环境配置（包含敏感信息）
+# 注意：保留 application.yml 作为模板，实际部署使用环境变量覆盖
+# shorturl-backend/src/main/resources/application.yml
+shorturl-backend/src/main/resources/application-prod.yml
+shorturl-backend/src/main/resources/application-local.yml
+
+# Docker Compose 覆盖文件
+docker-compose.override.yml
+
+# ==================== Java / Maven / Spring Boot ====================
+# Maven 构建输出
+shorturl-backend/target/
+target/
+*.jar
+*.war
+*.ear
+!shorturl-backend/target/shorturl-backend-*.jar
+
+# 编译文件
+*.class
+*.classpath
+*.factorypath
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Spring Boot
+spring-output/
+*.log.*
+application-*.yml.local
+
+# ==================== Node / NPM / Vue ====================
+# 依赖目录
+shorturl-frontend/node_modules/
+node_modules/
+jspm_packages/
+
+# 构建输出
+shorturl-frontend/dist/
+shorturl-frontend/dist-ssr/
+dist/
+dist-ssr/
+build/
+out/
+
+# 测试覆盖率
+coverage/
+*.lcov
+.nyc_output/
+
+# Vite 缓存
+.vite/
+*.local
+
+# NPM / Yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# 包管理锁文件（可选，团队协作建议保留）
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# ==================== IDE 和编辑器 ====================
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+.idea_modules/
+*.swp
+*.swo
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+.history/
+
+# Eclipse
+.project
+.settings/
+.classpath
+*.launch
+*.pydevproject
+.metadata
+
+# NetBeans
+nbproject/
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.*.sw[a-z]
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ==================== 操作系统 ====================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+Icon
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.stackdump
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ==================== 日志文件 ====================
+*.log
+*.log.*
+logs/
+*.log.gz
+*.log.zip
+
+# Spring Boot 日志
+spring.log
+application.log
+
+# ==================== 临时文件和备份 ====================
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.old
+*.orig
+*~
+.cache/
+tmp/
+temp/
+
+# ==================== 数据库 ====================
+# 本地数据库文件
+*.db
+*.sqlite
+*.sqlite3
+*.h2.db
+
+# 数据库备份
+*.sql.gz
+*.dump
+
+# ==================== Docker ====================
+# Docker Compose
+docker-compose.override.yml
+.dockerignore.local
+
+# Docker 镜像
+*.tar
+*.tar.gz
+
+# ==================== 证书和密钥 ====================
+# SSL 证书
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.jks
+*.keystore
+
+# SSH 密钥
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# ==================== 构建和打包 ====================
+# 压缩包
+*.zip
+*.rar
+*.7z
+*.gz
+*.bz2
+*.xz
+
+# 打包文件（除了必要的发布包）
+*.apk
+*.ipa
+*.deb
+*.rpm
+
+# ==================== 测试 ====================
+# 测试报告
+test-output/
+.jest/
+junit.xml
+TEST-*.xml
+
+# ==================== 其他 ====================
+# Thumbnails
+*.thumb
+
+# 编辑器自动保存
+*~
+.*.sw[a-z]
+*.un~
+Session.vim
+
+# 爬虫数据
+scrapy_cache/
+
+# PyCharm
+.idea/
+
+# 性能分析
+*.hprof
+*.prof
+
+# 系统文件
+.fuse_hidden*
+
+# 本地配置
+config.local.*
+*.local.js
+*.local.json
+
+# ==================== 项目特定 ====================
+# 上传的用户文件（如果有的话）
+uploads/
+upload/
+static/uploads/
+
+# 生成的文档
+docs/_build/
+site/
+
+# 脚本执行日志
+*.out
+nohup.out
+
+# PID 文件
+*.pid
+
+# ==================== 安全提示 ====================
+# ⚠️ 重要提示：
+# 1. 不要提交包含敏感信息的配置文件
+# 2. 不要提交数据库密码、API密钥等
+# 3. 使用环境变量或配置文件模板（.example）
+# 4. 定期检查是否误提交了敏感文件
+# 5. 使用 git-secrets 等工具扫描敏感信息

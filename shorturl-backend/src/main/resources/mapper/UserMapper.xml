@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shorturl.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.shorturl.entity.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="email" property="email"/>
+        <result column="avatar_base64" property="avatarBase64"/>
+        <result column="oauth_provider" property="oauthProvider"/>
+        <result column="oauth_id" property="oauthId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="last_login_time" property="lastLoginTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.shorturl.entity.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user (username, password, email, avatar_base64, oauth_provider, oauth_id, create_time, status)
+        VALUES (#{username}, #{password}, #{email}, #{avatarBase64}, #{oauthProvider}, #{oauthId}, #{createTime}, #{status})
+    </insert>
+
+    <select id="selectByUsername" resultMap="BaseResultMap">
+        SELECT * FROM user
+        WHERE username = #{username} AND status = 1
+    </select>
+
+    <select id="selectByEmail" resultMap="BaseResultMap">
+        SELECT * FROM user
+        WHERE email = #{email} AND status = 1
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM user
+        WHERE id = #{id} AND status = 1
+    </select>
+
+    <select id="selectByOAuth" resultMap="BaseResultMap">
+        SELECT * FROM user
+        WHERE oauth_provider = #{provider} AND oauth_id = #{oauthId} AND status = 1
+    </select>
+
+    <update id="updateLastLoginTime">
+        UPDATE user
+        SET last_login_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="update" parameterType="com.shorturl.entity.User">
+        UPDATE user
+        <set>
+            <if test="username != null">username = #{username},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="avatarBase64 != null">avatar_base64 = #{avatarBase64},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+</mapper>
+

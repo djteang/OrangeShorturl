@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shorturl.mapper.UrlMappingMapper">
+
+    <resultMap id="BaseResultMap" type="com.shorturl.entity.UrlMapping">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="short_code" property="shortCode"/>
+        <result column="original_url" property="originalUrl"/>
+        <result column="create_time" property="createTime"/>
+        <result column="expire_time" property="expireTime"/>
+        <result column="visit_count" property="visitCount"/>
+        <result column="last_visit_time" property="lastVisitTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.shorturl.entity.UrlMapping" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO url_mapping (user_id, short_code, original_url, create_time, expire_time, status)
+        VALUES (#{userId}, #{shortCode}, #{originalUrl}, #{createTime}, #{expireTime}, #{status})
+    </insert>
+
+    <select id="selectByShortCode" resultMap="BaseResultMap">
+        SELECT * FROM url_mapping
+        WHERE short_code = #{shortCode} AND status = 1
+    </select>
+
+    <update id="updateVisitInfo">
+        UPDATE url_mapping
+        SET visit_count = visit_count + 1,
+            last_visit_time = NOW()
+        WHERE short_code = #{shortCode}
+    </update>
+
+    <delete id="deleteByShortCode">
+        DELETE FROM url_mapping
+        WHERE short_code = #{shortCode}
+    </delete>
+
+    <select id="selectList" resultMap="BaseResultMap">
+        SELECT * FROM url_mapping
+        WHERE status = 1
+        <if test="keyword != null and keyword != ''">
+            AND (short_code LIKE CONCAT('%', #{keyword}, '%') 
+            OR original_url LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="selectCount" resultType="long">
+        SELECT COUNT(*) FROM url_mapping
+        WHERE status = 1
+        <if test="keyword != null and keyword != ''">
+            AND (short_code LIKE CONCAT('%', #{keyword}, '%') 
+            OR original_url LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+    </select>
+
+    <select id="existsByShortCode" resultType="int">
+        SELECT COUNT(*) FROM url_mapping
+        WHERE short_code = #{shortCode}
+    </select>
+
+    <select id="selectListByUserId" resultMap="BaseResultMap">
+        SELECT * FROM url_mapping
+        WHERE status = 1 AND user_id = #{userId}
+        <if test="keyword != null and keyword != ''">
+            AND (short_code LIKE CONCAT('%', #{keyword}, '%') 
+            OR original_url LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="selectCountByUserId" resultType="long">
+        SELECT COUNT(*) FROM url_mapping
+        WHERE status = 1 AND user_id = #{userId}
+        <if test="keyword != null and keyword != ''">
+            AND (short_code LIKE CONCAT('%', #{keyword}, '%') 
+            OR original_url LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+    </select>
+
+</mapper>
+

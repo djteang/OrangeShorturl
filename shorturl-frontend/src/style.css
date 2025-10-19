@@ -1,0 +1,234 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100vh;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 暗色主题 */
+.dark body {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+/* 明亮主题 */
+html:not(.dark) body {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+#app {
+  min-height: 100vh;
+  position: relative;
+}
+
+/* 暗色主题背景渐变 */
+.dark .gradient-bg {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #0c1323 100%);
+  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 明亮主题背景渐变 */
+html:not(.dark) .gradient-bg {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
+  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 暗色主题玻璃效果 - 更高对比度 */
+.dark .glass-effect {
+  background: rgba(30, 41, 59, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(71, 85, 105, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .glass-effect:hover {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(71, 85, 105, 0.5);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+}
+
+/* 明亮主题玻璃效果 - 更高对比度 */
+html:not(.dark) .glass-effect {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html:not(.dark) .glass-effect:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(203, 213, 225, 1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.08);
+}
+
+/* 输入框样式优化 */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark textarea,
+.dark select {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(71, 85, 105, 0.5);
+  color: #f8fafc;
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]):focus,
+.dark textarea:focus,
+.dark select:focus {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+html:not(.dark) input:not([type="checkbox"]):not([type="radio"]),
+html:not(.dark) textarea,
+html:not(.dark) select {
+  background: #ffffff;
+  border-color: rgba(203, 213, 225, 0.8);
+  color: #0f172a;
+}
+
+html:not(.dark) input:not([type="checkbox"]):not([type="radio"]):focus,
+html:not(.dark) textarea:focus,
+html:not(.dark) select:focus {
+  background: #ffffff;
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+/* 按钮样式优化 */
+.dark button:not(.text-only) {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+html:not(.dark) button:not(.text-only) {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 代码块样式 */
+.dark code,
+.dark pre {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(71, 85, 105, 0.5);
+}
+
+html:not(.dark) code,
+html:not(.dark) pre {
+  background: rgba(241, 245, 249, 0.8);
+  border: 1px solid rgba(203, 213, 225, 0.8);
+}
+
+/* 滚动条样式 */
+.dark ::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.8);
+  border: 2px solid rgba(30, 41, 59, 0.5);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.9);
+}
+
+html:not(.dark) ::-webkit-scrollbar-track {
+  background: rgba(248, 250, 252, 0.5);
+}
+
+html:not(.dark) ::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.8);
+  border: 2px solid rgba(248, 250, 252, 0.5);
+}
+
+html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.9);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* 选择文本样式 */
+.dark ::selection {
+  background: rgba(249, 115, 22, 0.3);
+  color: #f8fafc;
+}
+
+html:not(.dark) ::selection {
+  background: rgba(249, 115, 22, 0.2);
+  color: #0f172a;
+}
+
+/* 主题切换动画 - 使用平滑过渡 */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 为所有元素添加主题切换时的过渡效果 */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 排除某些元素的过渡效果，避免影响其他动画 */
+*:is(
+  [class*="animate-"],
+  [class*="transition-transform"],
+  [class*="hover:"],
+  button:hover,
+  a:hover,
+  input,
+  textarea,
+  select
+) {
+  transition-property: all;
+}
+
+/* View Transition API 支持 */
+@supports (view-transition-name: none) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.4s;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  ::view-transition-old(root) {
+    animation-name: theme-fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: theme-fade-in;
+  }
+
+  @keyframes theme-fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes theme-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
