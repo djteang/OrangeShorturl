@@ -82,10 +82,10 @@ CREATE TABLE IF NOT EXISTS user_review (
 
 -- 插入默认管理员用户
 -- 用户名: admin
--- 密码: admin123
+-- 密码: 123456
 -- 注意：首次使用时请立即修改默认密码！
 INSERT INTO user (username, password, email, role, status) 
-SELECT 'admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIVI8iXYO6VslY0pZ6jP6tVxB0xJqHtm', 'admin@example.com', 'admin', 1
+SELECT 'admin', 'e10adc3949ba59abbe56e057f20f883e', 'admin@example.com', 'admin', 1
 WHERE NOT EXISTS (SELECT 1 FROM user WHERE username = 'admin');
 
 -- User-Agent黑名单表

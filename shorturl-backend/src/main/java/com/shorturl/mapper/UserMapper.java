@@ -44,5 +44,10 @@ public interface UserMapper {
      * 更新用户信息
      */
     int update(User user);
+
+    /**
+     * 更新密码
+     */
+    int updatePassword(@Param("id") Long id, @Param("password") String password);
 }
 

@@ -88,7 +88,7 @@ public class VisitLogServiceImpl implements VisitLogService {
         response.setDailyTrends(dailyTrends);
         
         // 地域统计
-        List<Map<String, Object>> locationMaps = visitLogMapper.selectLocationStats(10);
+        List<Map<String, Object>> locationMaps = visitLogMapper.selectGlobalLocationStats(10);
         List<GlobalStatsResponse.LocationStat> locationStats = new ArrayList<>();
         for (Map<String, Object> map : locationMaps) {
             GlobalStatsResponse.LocationStat stat = new GlobalStatsResponse.LocationStat();
@@ -99,7 +99,7 @@ public class VisitLogServiceImpl implements VisitLogService {
         response.setLocationStats(locationStats);
         
         // 设备类型统计
-        List<Map<String, Object>> deviceMaps = visitLogMapper.selectDeviceStats();
+        List<Map<String, Object>> deviceMaps = visitLogMapper.selectGlobalDeviceStats();
         List<GlobalStatsResponse.DeviceStat> deviceStats = new ArrayList<>();
         long totalDeviceCount = 0;
         for (Map<String, Object> map : deviceMaps) {
@@ -116,7 +116,7 @@ public class VisitLogServiceImpl implements VisitLogService {
         response.setDeviceStats(deviceStats);
         
         // 浏览器统计
-        List<Map<String, Object>> browserMaps = visitLogMapper.selectBrowserStats(10);
+        List<Map<String, Object>> browserMaps = visitLogMapper.selectGlobalBrowserStats(10);
         List<GlobalStatsResponse.BrowserStat> browserStats = new ArrayList<>();
         for (Map<String, Object> map : browserMaps) {
             GlobalStatsResponse.BrowserStat stat = new GlobalStatsResponse.BrowserStat();
@@ -127,7 +127,7 @@ public class VisitLogServiceImpl implements VisitLogService {
         response.setBrowserStats(browserStats);
         
         // 操作系统统计
-        List<Map<String, Object>> osMaps = visitLogMapper.selectOsStats(10);
+        List<Map<String, Object>> osMaps = visitLogMapper.selectGlobalOsStats(10);
         List<GlobalStatsResponse.OsStat> osStats = new ArrayList<>();
         for (Map<String, Object> map : osMaps) {
             GlobalStatsResponse.OsStat stat = new GlobalStatsResponse.OsStat();

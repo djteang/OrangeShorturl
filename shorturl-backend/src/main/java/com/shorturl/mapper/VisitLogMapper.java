@@ -86,22 +86,22 @@ public interface VisitLogMapper {
     /**
      * 查询地域统计（全局）
      */
-    List<Map<String, Object>> selectLocationStats(@Param("limit") Integer limit);
+    List<Map<String, Object>> selectGlobalLocationStats(@Param("limit") Integer limit);
     
     /**
      * 查询设备类型统计（全局）
      */
-    List<Map<String, Object>> selectDeviceStats();
+    List<Map<String, Object>> selectGlobalDeviceStats();
     
     /**
      * 查询浏览器统计（全局）
      */
-    List<Map<String, Object>> selectBrowserStats(@Param("limit") Integer limit);
+    List<Map<String, Object>> selectGlobalBrowserStats(@Param("limit") Integer limit);
     
     /**
      * 查询操作系统统计（全局）
      */
-    List<Map<String, Object>> selectOsStats(@Param("limit") Integer limit);
+    List<Map<String, Object>> selectGlobalOsStats(@Param("limit") Integer limit);
     
     /**
      * 查询访问量Top N的短链接（全局）

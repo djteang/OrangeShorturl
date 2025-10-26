@@ -191,13 +191,13 @@ const handleFileChange = (event) => {
 
   // 验证文件类型
   if (!file.type.startsWith('image/')) {
-    alert('请选择图片文件')
+    toast.error('请选择图片文件')
     return
   }
 
   // 验证文件大小（限制为2MB）
   if (file.size > 2 * 1024 * 1024) {
-    alert('图片大小不能超过2MB')
+    toast.error('图片大小不能超过2MB')
     return
   }
 

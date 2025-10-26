@@ -305,8 +305,7 @@ public class UserServiceImpl implements UserService {
         String encryptedNewPassword = encryptPassword(newPassword);
         
         // 更新密码
-        user.setPassword(encryptedNewPassword);
-        userMapper.update(user);
+        userMapper.updatePassword(user.getId(), encryptedNewPassword);
     }
     
     /**
