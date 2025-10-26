@@ -20,6 +20,11 @@ public class UrlDetailResponse {
     private String originalUrl;
     
     /**
+     * 链接标题
+     */
+    private String title;
+    
+    /**
      * 完整短链接URL
      */
     private String shortUrl;
@@ -43,5 +48,15 @@ public class UrlDetailResponse {
      * 最后访问时间
      */
     private Date lastVisitTime;
+    
+    /**
+     * 分组ID
+     */
+    private Long groupId;
+    
+    /**
+     * 二维码配置
+     */
+    private QRConfigDTO qrConfig;
 }
 

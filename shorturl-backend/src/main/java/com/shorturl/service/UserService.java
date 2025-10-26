@@ -45,5 +45,15 @@ public interface UserService {
      * 登出
      */
     void logout(Long userId);
+    
+    /**
+     * 修改用户名
+     */
+    void updateUsername(Long userId, String username);
+    
+    /**
+     * 修改密码
+     */
+    void changePassword(Long userId, String oldPassword, String newPassword);
 }
 

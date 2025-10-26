@@ -11,6 +11,7 @@
         <result column="avatar_base64" property="avatarBase64"/>
         <result column="oauth_provider" property="oauthProvider"/>
         <result column="oauth_id" property="oauthId"/>
+        <result column="role" property="role"/>
         <result column="create_time" property="createTime"/>
         <result column="last_login_time" property="lastLoginTime"/>
         <result column="status" property="status"/>

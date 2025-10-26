@@ -42,5 +42,25 @@ public interface VisitLogMapper {
      */
     Integer countByUserId(@Param("userId") Long userId,
                           @Param("shortCode") String shortCode);
+    
+    /**
+     * 查询地域统计
+     */
+    List<Map<String, Object>> selectLocationStats(@Param("shortCode") String shortCode);
+    
+    /**
+     * 查询设备类型统计
+     */
+    List<Map<String, Object>> selectDeviceTypeStats(@Param("shortCode") String shortCode);
+    
+    /**
+     * 查询浏览器统计
+     */
+    List<Map<String, Object>> selectBrowserStats(@Param("shortCode") String shortCode);
+    
+    /**
+     * 查询操作系统统计
+     */
+    List<Map<String, Object>> selectOsStats(@Param("shortCode") String shortCode);
 }
 

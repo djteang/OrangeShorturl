@@ -56,6 +56,7 @@
                 <th class="px-6 py-4 text-left text-xs font-bold dark:text-slate-200 text-slate-800 uppercase tracking-wider">IP地址</th>
                 <th class="px-6 py-4 text-left text-xs font-bold dark:text-slate-200 text-slate-800 uppercase tracking-wider">浏览器</th>
                 <th class="px-6 py-4 text-left text-xs font-bold dark:text-slate-200 text-slate-800 uppercase tracking-wider">来源</th>
+                <th class="px-6 py-4 text-center text-xs font-bold dark:text-slate-200 text-slate-800 uppercase tracking-wider">操作</th>
               </tr>
             </thead>
             <tbody class="divide-y dark:divide-slate-700 divide-slate-300">
@@ -80,6 +81,14 @@
                   <div class="text-xs dark:text-slate-400 text-slate-600 max-w-xs truncate" :title="item.referer">
                     {{ item.referer || '直接访问' }}
                   </div>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <button
+                    @click="showDetail(item)"
+                    class="px-3 py-1 bg-blue-600 hover:bg-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600 text-white text-sm rounded-lg transition-all shadow-sm hover:shadow-md"
+                  >
+                    详情
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -112,6 +121,202 @@
         </div>
       </div>
     </div>
+
+    <!-- 详情模态框 -->
+    <div
+      v-if="showDetailModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+    >
+      <div class="glass-effect rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border dark:border-slate-600 border-slate-300">
+        <!-- 标题栏 -->
+        <div class="sticky top-0 dark:bg-slate-800/95 bg-white/95 backdrop-blur-md px-6 py-4 border-b dark:border-slate-600 border-slate-300 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <svg class="w-6 h-6 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 class="text-2xl font-bold dark:text-slate-50 text-slate-900">访问详情</h2>
+          </div>
+          <button
+            @click="closeDetail"
+            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- 详情内容 -->
+        <div v-if="selectedLog" class="p-6 space-y-6">
+          <!-- 基本信息 -->
+          <div class="dark:bg-slate-800/50 bg-slate-50 rounded-lg p-4 border dark:border-slate-700 border-slate-300">
+            <h3 class="text-lg font-semibold dark:text-slate-200 text-slate-800 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              基本信息
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">短码</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 font-mono bg-orange-500/10 dark:bg-orange-500/20 px-3 py-2 rounded border dark:border-orange-500/30 border-orange-500/50 mt-1">
+                  {{ selectedLog.shortCode || '-' }}
+                </p>
+              </div>
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">访问时间</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ formatDate(selectedLog.visitTime) }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 网络信息 -->
+          <div class="dark:bg-slate-800/50 bg-slate-50 rounded-lg p-4 border dark:border-slate-700 border-slate-300">
+            <h3 class="text-lg font-semibold dark:text-slate-200 text-slate-800 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+              </svg>
+              网络信息
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">IP地址</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 font-mono dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ selectedLog.ipAddress || '-' }}
+                </p>
+              </div>
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">运营商</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ selectedLog.isp || '-' }}
+                </p>
+              </div>
+              <div class="md:col-span-2">
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">来源页面</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1 break-all">
+                  {{ selectedLog.referer || '直接访问' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 地理位置 -->
+          <div class="dark:bg-slate-800/50 bg-slate-50 rounded-lg p-4 border dark:border-slate-700 border-slate-300">
+            <h3 class="text-lg font-semibold dark:text-slate-200 text-slate-800 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              地理位置
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">国家</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ selectedLog.country || '-' }}
+                </p>
+              </div>
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">省份</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ selectedLog.province || '-' }}
+                </p>
+              </div>
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">城市</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ selectedLog.city || '-' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 设备信息 -->
+          <div class="dark:bg-slate-800/50 bg-slate-50 rounded-lg p-4 border dark:border-slate-700 border-slate-300">
+            <h3 class="text-lg font-semibold dark:text-slate-200 text-slate-800 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              设备信息
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">设备类型</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ selectedLog.deviceType || '-' }}
+                </p>
+              </div>
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">设备品牌</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ selectedLog.deviceBrand || '-' }}
+                </p>
+              </div>
+              <div class="md:col-span-2">
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">设备型号</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ selectedLog.deviceModel || '-' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 浏览器和系统 -->
+          <div class="dark:bg-slate-800/50 bg-slate-50 rounded-lg p-4 border dark:border-slate-700 border-slate-300">
+            <h3 class="text-lg font-semibold dark:text-slate-200 text-slate-800 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              浏览器和系统
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">浏览器</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ selectedLog.browser || '-' }}
+                </p>
+              </div>
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">浏览器版本</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ selectedLog.browserVersion || '-' }}
+                </p>
+              </div>
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">操作系统</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ selectedLog.os || '-' }}
+                </p>
+              </div>
+              <div>
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">系统版本</label>
+                <p class="text-sm dark:text-slate-200 text-slate-800 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1">
+                  {{ selectedLog.osVersion || '-' }}
+                </p>
+              </div>
+              <div class="md:col-span-2">
+                <label class="text-xs font-medium dark:text-slate-400 text-slate-600">完整User-Agent</label>
+                <p class="text-xs dark:text-slate-300 text-slate-700 dark:bg-slate-700 bg-white px-3 py-2 rounded border dark:border-slate-600 border-slate-300 mt-1 font-mono break-all">
+                  {{ selectedLog.userAgent || '-' }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部按钮 -->
+        <div class="sticky bottom-0 dark:bg-slate-800/95 bg-white/95 backdrop-blur-md px-6 py-4 border-t dark:border-slate-600 border-slate-300 flex justify-end">
+          <button
+            @click="closeDetail"
+            class="px-6 py-2 bg-slate-600 hover:bg-slate-500 dark:bg-slate-700 dark:hover:bg-slate-600 text-white rounded-lg transition-all shadow-sm hover:shadow-md"
+          >
+            关闭
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -126,6 +331,8 @@ const shortCode = ref('')
 const page = ref(1)
 const size = ref(10)
 const total = ref(0)
+const showDetailModal = ref(false)
+const selectedLog = ref(null)
 
 onMounted(() => {
   loadData()
@@ -194,6 +401,18 @@ const formatUserAgent = (ua) => {
     // 截取前50个字符
     return ua.substring(0, 50) + (ua.length > 50 ? '...' : '')
   }
+}
+
+const showDetail = (log) => {
+  selectedLog.value = log
+  showDetailModal.value = true
+}
+
+const closeDetail = () => {
+  showDetailModal.value = false
+  setTimeout(() => {
+    selectedLog.value = null
+  }, 300)
 }
 </script>
 

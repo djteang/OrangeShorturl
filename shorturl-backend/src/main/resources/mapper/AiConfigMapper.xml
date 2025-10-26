@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shorturl.mapper.AiConfigMapper">
+    
+    <resultMap id="BaseResultMap" type="com.shorturl.entity.AiConfig">
+        <id column="id" property="id"/>
+        <result column="provider" property="provider"/>
+        <result column="api_key" property="apiKey"/>
+        <result column="api_url" property="apiUrl"/>
+        <result column="model_name" property="modelName"/>
+        <result column="prompt" property="prompt"/>
+        <result column="enabled" property="enabled"/>
+        <result column="timeout" property="timeout"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    
+    <select id="select" resultMap="BaseResultMap">
+        SELECT id, provider, api_key, api_url, model_name, prompt, 
+               enabled, timeout, create_time, update_time
+        FROM ai_config
+        LIMIT 1
+    </select>
+    
+    <insert id="insert" parameterType="com.shorturl.entity.AiConfig" 
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ai_config (
+            provider, api_key, api_url, model_name, prompt, enabled, timeout
+        ) VALUES (
+            #{provider}, #{apiKey}, #{apiUrl}, #{modelName}, #{prompt}, #{enabled}, #{timeout}
+        )
+    </insert>
+    
+    <update id="update" parameterType="com.shorturl.entity.AiConfig">
+        UPDATE ai_config
+        SET provider = #{provider},
+            api_key = #{apiKey},
+            api_url = #{apiUrl},
+            model_name = #{modelName},
+            prompt = #{prompt},
+            enabled = #{enabled},
+            timeout = #{timeout}
+        WHERE id = #{id}
+    </update>
+    
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM ai_config
+    </select>
+    
+</mapper>
+

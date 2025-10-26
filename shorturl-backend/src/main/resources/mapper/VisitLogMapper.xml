@@ -8,13 +8,28 @@
         <result column="short_code" property="shortCode"/>
         <result column="visit_time" property="visitTime"/>
         <result column="ip_address" property="ipAddress"/>
+        <result column="country" property="country"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="isp" property="isp"/>
         <result column="user_agent" property="userAgent"/>
+        <result column="browser" property="browser"/>
+        <result column="browser_version" property="browserVersion"/>
+        <result column="os" property="os"/>
+        <result column="os_version" property="osVersion"/>
+        <result column="device_type" property="deviceType"/>
+        <result column="device_brand" property="deviceBrand"/>
+        <result column="device_model" property="deviceModel"/>
         <result column="referer" property="referer"/>
     </resultMap>
 
     <insert id="insert" parameterType="com.shorturl.entity.VisitLog">
-        INSERT INTO visit_log (short_code, visit_time, ip_address, user_agent, referer)
-        VALUES (#{shortCode}, #{visitTime}, #{ipAddress}, #{userAgent}, #{referer})
+        INSERT INTO visit_log (short_code, visit_time, ip_address, country, province, city, isp, 
+                               user_agent, browser, browser_version, os, os_version, 
+                               device_type, device_brand, device_model, referer)
+        VALUES (#{shortCode}, #{visitTime}, #{ipAddress}, #{country}, #{province}, #{city}, #{isp},
+                #{userAgent}, #{browser}, #{browserVersion}, #{os}, #{osVersion},
+                #{deviceType}, #{deviceBrand}, #{deviceModel}, #{referer})
     </insert>
 
     <select id="selectRecentVisits" resultMap="BaseResultMap">
@@ -54,6 +69,51 @@
         <if test="shortCode != null and shortCode != ''">
             AND vl.short_code = #{shortCode}
         </if>
+    </select>
+
+    <select id="selectLocationStats" resultType="map">
+        SELECT 
+            COALESCE(country, '未知') as country,
+            COALESCE(province, '未知') as province,
+            COALESCE(city, '未知') as city,
+            COUNT(*) as count
+        FROM visit_log
+        WHERE short_code = #{shortCode}
+        GROUP BY country, province, city
+        ORDER BY count DESC
+        LIMIT 20
+    </select>
+
+    <select id="selectDeviceTypeStats" resultType="map">
+        SELECT 
+            COALESCE(device_type, '未知') as deviceType,
+            COUNT(*) as count
+        FROM visit_log
+        WHERE short_code = #{shortCode}
+        GROUP BY device_type
+        ORDER BY count DESC
+    </select>
+
+    <select id="selectBrowserStats" resultType="map">
+        SELECT 
+            COALESCE(browser, '未知') as browser,
+            COUNT(*) as count
+        FROM visit_log
+        WHERE short_code = #{shortCode}
+        GROUP BY browser
+        ORDER BY count DESC
+        LIMIT 10
+    </select>
+
+    <select id="selectOsStats" resultType="map">
+        SELECT 
+            COALESCE(os, '未知') as os,
+            COUNT(*) as count
+        FROM visit_log
+        WHERE short_code = #{shortCode}
+        GROUP BY os
+        ORDER BY count DESC
+        LIMIT 10
     </select>
 
 </mapper>

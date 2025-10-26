@@ -20,6 +20,11 @@ public class UrlMapping {
     private Long userId;
     
     /**
+     * 分组ID
+     */
+    private Long groupId;
+    
+    /**
      * 短码
      */
     private String shortCode;
@@ -28,6 +33,11 @@ public class UrlMapping {
      * 原始URL
      */
     private String originalUrl;
+    
+    /**
+     * 链接标题
+     */
+    private String title;
     
     /**
      * 创建时间
@@ -53,5 +63,10 @@ public class UrlMapping {
      * 状态：0-无效，1-有效
      */
     private Integer status;
+    
+    /**
+     * 二维码配置（JSON格式）
+     */
+    private String qrConfig;
 }
 

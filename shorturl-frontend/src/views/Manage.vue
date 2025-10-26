@@ -52,6 +52,7 @@
             <thead class="dark:bg-slate-800/70 bg-slate-200 border-b-2 dark:border-slate-600 border-slate-300">
               <tr>
                 <th class="px-6 py-4 text-left text-xs font-bold dark:text-slate-200 text-slate-800 uppercase tracking-wider">短码</th>
+                <th class="px-6 py-4 text-left text-xs font-bold dark:text-slate-200 text-slate-800 uppercase tracking-wider">标题</th>
                 <th class="px-6 py-4 text-left text-xs font-bold dark:text-slate-200 text-slate-800 uppercase tracking-wider">原始URL</th>
                 <th class="px-6 py-4 text-left text-xs font-bold dark:text-slate-200 text-slate-800 uppercase tracking-wider">创建时间</th>
                 <th class="px-6 py-4 text-left text-xs font-bold dark:text-slate-200 text-slate-800 uppercase tracking-wider">访问次数</th>
@@ -62,6 +63,11 @@
               <tr v-for="item in list" :key="item.shortCode" class="dark:hover:bg-slate-800/50 hover:bg-slate-100 transition-all">
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span class="dark:text-orange-400 text-orange-600 font-semibold">{{ item.shortCode }}</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="text-sm dark:text-slate-300 text-slate-700 max-w-xs truncate" :title="item.title || '未获取到标题'">
+                    {{ item.title || '未获取到标题' }}
+                  </div>
                 </td>
                 <td class="px-6 py-4">
                   <div class="text-sm dark:text-slate-200 text-slate-800 max-w-md truncate" :title="item.originalUrl">
@@ -93,7 +99,7 @@
                       详情
                     </button>
                     <button
-                      @click="deleteItem(item.shortCode)"
+                      @click="deleteItem(item)"
                       class="dark:text-red-300 text-red-600 dark:hover:text-red-200 hover:text-red-700 font-medium transition-all hover:underline"
                       title="删除"
                     >
@@ -132,6 +138,43 @@
         </div>
       </div>
     </div>
+
+    <!-- 删除确认对话框 -->
+    <div 
+      v-if="showDeleteDialog"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      @click.self="closeDeleteDialog">
+      <div class="glass-effect rounded-2xl border-2 dark:border-slate-700 border-slate-300 p-6 max-w-md w-full shadow-2xl">
+        <div class="text-center">
+          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
+            <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold dark:text-slate-50 text-slate-900 mb-2">确认删除</h3>
+          <p class="dark:text-slate-300 text-slate-600 mb-1">确定要删除这个短链接吗？</p>
+          <p class="text-sm dark:text-slate-400 text-slate-500 mb-2">
+            短码：<span class="font-semibold text-orange-500">{{ itemToDelete?.shortCode }}</span>
+          </p>
+          <p class="text-xs dark:text-slate-500 text-slate-500 mb-6 truncate px-4" :title="itemToDelete?.originalUrl">
+            {{ itemToDelete?.originalUrl }}
+          </p>
+        </div>
+        
+        <div class="flex space-x-3">
+          <button 
+            @click="closeDeleteDialog"
+            class="flex-1 px-4 py-2 dark:bg-slate-700 bg-slate-200 dark:text-slate-50 text-slate-900 rounded-lg font-medium hover:opacity-80 transition-all">
+            取消
+          </button>
+          <button 
+            @click="confirmDelete"
+            class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg font-medium transition-all">
+            删除
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -150,6 +193,8 @@ const keyword = ref('')
 const page = ref(1)
 const size = ref(10)
 const total = ref(0)
+const showDeleteDialog = ref(false)
+const itemToDelete = ref(null)
 
 onMounted(() => {
   loadData()
@@ -197,16 +242,19 @@ const viewDetail = (shortCode) => {
   router.push(`/detail/${shortCode}`)
 }
 
-const deleteItem = async (shortCode) => {
-  // 使用浏览器原生确认对话框
-  if (!confirm('确定要删除这个短链接吗？')) {
-    return
-  }
+const deleteItem = (item) => {
+  itemToDelete.value = item
+  showDeleteDialog.value = true
+}
 
+const confirmDelete = async () => {
+  if (!itemToDelete.value) return
+  
   try {
-    const response = await api.deleteUrl(shortCode)
+    const response = await api.deleteUrl(itemToDelete.value.shortCode)
     if (response.code === 200) {
       toast.success('删除成功！')
+      closeDeleteDialog()
       loadData()
     } else {
       toast.error(response.message || '删除失败')
@@ -214,6 +262,11 @@ const deleteItem = async (shortCode) => {
   } catch (err) {
     toast.error('删除失败，请稍后重试')
   }
+}
+
+const closeDeleteDialog = () => {
+  showDeleteDialog.value = false
+  itemToDelete.value = null
 }
 
 const formatDate = (dateStr) => {

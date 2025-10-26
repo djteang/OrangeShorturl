@@ -40,7 +40,14 @@ public class Result<T> {
     public static <T> Result<T> success() {
         return new Result<>(200, "success", null);
     }
-    
+
+    /**
+     * 请求限制响应
+     */
+    public static <T> Result<T> rateLimit(String message) {
+        return new Result<>(429, message, null);
+    }
+
     /**
      * 失败响应
      */

@@ -120,5 +120,57 @@ public class UserController {
             return Result.error(e.getMessage());
         }
     }
+    
+    /**
+     * 修改用户名
+     */
+    @PutMapping("/update-username")
+    public Result<String> updateUsername(@RequestHeader("Authorization") String authorization,
+                                         @RequestBody java.util.Map<String, String> request) {
+        try {
+            String token = authorization.replace("Bearer ", "");
+            Long userId = JwtUtils.getUserIdFromToken(token);
+            
+            String username = request.get("username");
+            if (username == null || username.trim().isEmpty()) {
+                return Result.error("用户名不能为空");
+            }
+            
+            userService.updateUsername(userId, username);
+            return Result.success("用户名修改成功");
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
+    
+    /**
+     * 修改密码
+     */
+    @PutMapping("/change-password")
+    public Result<String> changePassword(@RequestHeader("Authorization") String authorization,
+                                         @RequestBody java.util.Map<String, String> request) {
+        try {
+            String token = authorization.replace("Bearer ", "");
+            Long userId = JwtUtils.getUserIdFromToken(token);
+            
+            String oldPassword = request.get("oldPassword");
+            String newPassword = request.get("newPassword");
+            
+            if (oldPassword == null || oldPassword.trim().isEmpty()) {
+                return Result.error("当前密码不能为空");
+            }
+            if (newPassword == null || newPassword.trim().isEmpty()) {
+                return Result.error("新密码不能为空");
+            }
+            if (newPassword.length() < 6) {
+                return Result.error("新密码至少6位");
+            }
+            
+            userService.changePassword(userId, oldPassword, newPassword);
+            return Result.success("密码修改成功");
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
 }
 

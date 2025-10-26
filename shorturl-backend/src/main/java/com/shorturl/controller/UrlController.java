@@ -1,5 +1,6 @@
 package com.shorturl.controller;
 
+import com.shorturl.annotation.RateLimit;
 import com.shorturl.dto.*;
 import com.shorturl.service.UrlService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,9 @@ public class UrlController {
     
     /**
      * 生成短链接
+     * 限流：每个IP每分钟最多10次请求
      */
+    @RateLimit(key = "shorten", time = 60, count = 10, limitType = RateLimit.LimitType.IP)
     @PostMapping("/url/shorten")
     public Result<ShortenResponse> shorten(@Validated @RequestBody ShortenRequest request) {
         try {
@@ -33,7 +36,9 @@ public class UrlController {
     
     /**
      * 短链接重定向（直接重定向）
+     * 限流：每个IP每分钟最多30次请求
      */
+    @RateLimit(key = "redirect", time = 60, count = 10, limitType = RateLimit.LimitType.IP)
     @GetMapping("/{shortCode}")
     public void redirect(@PathVariable String shortCode, 
                         HttpServletRequest request,
@@ -66,6 +71,7 @@ public class UrlController {
     /**
      * 获取URL列表
      */
+    @RateLimit(key = "list", time = 60, count = 30, limitType = RateLimit.LimitType.IP)
     @GetMapping("/url/list")
     public Result<PageResult<UrlDetailResponse>> getList(
             @RequestParam(defaultValue = "1") Integer page,
@@ -82,6 +88,7 @@ public class UrlController {
     /**
      * 获取URL详情
      */
+    @RateLimit(key = "detail", time = 60, count = 30, limitType = RateLimit.LimitType.IP)
     @GetMapping("/url/detail/{shortCode}")
     public Result<UrlDetailResponse> getDetail(@PathVariable String shortCode) {
         try {
@@ -95,6 +102,7 @@ public class UrlController {
     /**
      * 删除URL
      */
+    @RateLimit(key = "delete", time = 60, count = 5, limitType = RateLimit.LimitType.IP)
     @DeleteMapping("/url/{shortCode}")
     public Result<Void> delete(@PathVariable String shortCode) {
         try {
@@ -108,6 +116,7 @@ public class UrlController {
     /**
      * 获取访问统计
      */
+    @RateLimit(key = "stats", time = 60, count = 30, limitType = RateLimit.LimitType.IP)
     @GetMapping("/url/stats/{shortCode}")
     public Result<VisitStatsResponse> getStats(@PathVariable String shortCode) {
         try {

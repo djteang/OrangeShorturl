@@ -58,5 +58,10 @@ public class User {
      * 状态
      */
     private Integer status;
+    
+    /**
+     * 用户角色：admin-管理员，user-普通用户
+     */
+    private String role;
 }
 

@@ -1,6 +1,6 @@
 <template>
   <transition name="dialog">
-    <div v-if="show" class="fixed inset-0 z-[100] flex items-center justify-center p-4" @click.self="handleCancel">
+    <div class="fixed inset-0 z-[100] flex items-center justify-center p-4" @click.self="handleCancel">
       <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
       <div class="relative glass-effect rounded-2xl border-2 dark:border-slate-600 border-slate-300 shadow-2xl max-w-2xl w-full overflow-hidden">
         <!-- 头部 -->
@@ -22,17 +22,19 @@
 
         <!-- 内容 -->
         <div class="p-6">
+          <!-- 隐藏的文件输入框（始终保留在DOM中） -->
+          <input 
+            ref="fileInput" 
+            type="file" 
+            accept="image/*" 
+            class="hidden" 
+            @change="handleFileChange"
+          />
+          
           <!-- 图片选择区域 -->
           <div v-if="!imageSrc" class="text-center py-12">
-            <input 
-              ref="fileInput" 
-              type="file" 
-              accept="image/*" 
-              class="hidden" 
-              @change="handleFileChange"
-            />
             <div 
-              @click="$refs.fileInput.click()"
+              @click="fileInput.click()"
               class="cursor-pointer border-3 border-dashed dark:border-slate-600 border-slate-300 rounded-2xl p-12 dark:hover:border-orange-500 hover:border-orange-500 dark:hover:bg-slate-800/50 hover:bg-orange-50 transition-all">
               <svg class="w-16 h-16 dark:text-slate-500 text-slate-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
@@ -44,6 +46,18 @@
 
           <!-- 裁剪区域 -->
           <div v-else>
+            <!-- 重新选择图片按钮 -->
+            <div class="mb-3 flex justify-end">
+              <button
+                @click="changeImage"
+                class="text-sm px-4 py-2 dark:text-orange-400 text-orange-600 dark:hover:text-orange-300 hover:text-orange-700 dark:hover:bg-slate-700/50 hover:bg-orange-50 rounded-lg transition-all flex items-center gap-2 border border-transparent dark:hover:border-slate-600 hover:border-orange-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg>
+                重新选择图片
+              </button>
+            </div>
+            
             <div class="mb-4">
               <div class="relative bg-black rounded-xl overflow-hidden" style="height: 400px;">
                 <img ref="cropperImage" :src="imageSrc" alt="cropper" class="max-w-full" />
@@ -108,14 +122,6 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                 </svg>
               </button>
-              <button
-                @click="changeImage"
-                class="p-3 dark:bg-slate-700 bg-slate-200 dark:hover:bg-slate-600 hover:bg-slate-300 rounded-lg transition-all border dark:border-slate-600 border-slate-400 group"
-                title="更换图片">
-                <svg class="w-5 h-5 dark:text-slate-200 text-slate-700 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                </svg>
-              </button>
             </div>
           </div>
         </div>
@@ -144,15 +150,18 @@
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.css'
+import { userStore } from '../store'
+import api from '../api/user'
+import toast from '../utils/toast'
 
 const props = defineProps({
-  show: {
-    type: Boolean,
-    default: false
+  existingAvatar: {
+    type: String,
+    default: ''
   }
 })
 
-const emit = defineEmits(['update:show', 'confirm', 'cancel'])
+const emit = defineEmits(['close', 'update'])
 
 const fileInput = ref(null)
 const cropperImage = ref(null)
@@ -162,12 +171,10 @@ const uploading = ref(false)
 const scaleX = ref(1)
 const scaleY = ref(1)
 
-watch(() => props.show, async (newVal) => {
-  if (!newVal) {
-    destroyCropper()
-    imageSrc.value = ''
-    scaleX.value = 1
-    scaleY.value = 1
+// 组件挂载时，如果有已有头像，显示在预览区
+onMounted(() => {
+  if (props.existingAvatar) {
+    imageSrc.value = props.existingAvatar
   }
 })
 
@@ -282,31 +289,45 @@ const changeImage = () => {
   fileInput.value.click()
 }
 
-const handleConfirm = () => {
+const handleConfirm = async () => {
   if (!cropper.value) return
 
   uploading.value = true
   
-  // 获取裁剪后的canvas
-  const canvas = cropper.value.getCroppedCanvas({
-    width: 200,
-    height: 200,
-    imageSmoothingQuality: 'high'
-  })
+  try {
+    // 获取裁剪后的canvas（使用更高的分辨率以保持清晰度）
+    const canvas = cropper.value.getCroppedCanvas({
+      width: 512,
+      height: 512,
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high'
+    })
 
-  // 转换为Base64
-  const croppedImage = canvas.toDataURL('image/jpeg', 0.9)
-  
-  emit('confirm', croppedImage)
-  
-  setTimeout(() => {
+    // 转换为Base64（使用PNG格式保持最佳质量，或使用更高的JPEG质量）
+    const croppedImage = canvas.toDataURL('image/png')
+    
+    // 调用API更新头像
+    const response = await api.updateAvatar({ avatarBase64: croppedImage })
+    
+    if (response.code === 200) {
+      // 更新store中的头像
+      userStore.user.avatarBase64 = croppedImage
+      localStorage.setItem('user', JSON.stringify(userStore.user))
+      toast.success('头像更新成功')
+      emit('update', croppedImage)
+    } else {
+      toast.error(response.message || '头像更新失败')
+    }
+  } catch (error) {
+    console.error('头像上传失败:', error)
+    toast.error('头像上传失败，请重试')
+  } finally {
     uploading.value = false
-  }, 100)
+  }
 }
 
 const handleCancel = () => {
-  emit('cancel')
-  emit('update:show', false)
+  emit('close')
 }
 
 onUnmounted(() => {

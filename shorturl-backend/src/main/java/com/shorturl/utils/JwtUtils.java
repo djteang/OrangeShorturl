@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
@@ -67,6 +68,22 @@ public class JwtUtils {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+    
+    /**
+     * 从HttpServletRequest中获取用户ID
+     */
+    public static Long getUserIdFromRequest(HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            if (token == null || !token.startsWith("Bearer ")) {
+                return null;
+            }
+            token = token.substring(7);
+            return getUserIdFromToken(token);
+        } catch (Exception e) {
+            return null;
         }
     }
 }

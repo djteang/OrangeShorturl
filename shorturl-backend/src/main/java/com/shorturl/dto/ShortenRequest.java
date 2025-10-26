@@ -27,5 +27,15 @@ public class ShortenRequest {
      * 过期时间（可选，格式：yyyy-MM-dd HH:mm:ss）
      */
     private String expireTime;
+    
+    /**
+     * 分组ID（可选）
+     */
+    private Long groupId;
+    
+    /**
+     * 二维码配置（可选）
+     */
+    private QRConfigDTO qrConfig;
 }
 

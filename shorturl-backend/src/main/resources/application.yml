@@ -6,7 +6,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://ip:3306/shorturl?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.110.129:3307/shorturl?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: password
 
@@ -14,8 +14,8 @@ spring:
   mail:
     host: smtp.qq.com
     port: 465
-    username: mail.com
-    password: code
+    username: mail
+    password: password
     default-encoding: UTF-8
     properties:
       mail:
@@ -34,10 +34,10 @@ spring:
 
   # Redis Configuration
   redis:
-    host: ip
+    host: 192.168.110.129
     port: 6379
     password: password
-    database: 0
+    database: 7
     timeout: 3000
     lettuce:
       pool:
@@ -56,8 +56,8 @@ mybatis:
 
 # Application Configuration
 shorturl:
-  domain: https://orange-shorturl.czdgg.top
-  frontend-url: https://orange-shorturl.czdgg.top
+  domain: http://localhost:9003
+  frontend-url: http://localhost:5173  # 前端开发服务器地址，生产环境改为实际域名
 
 # OAuth Configuration - Linux.do
 oauth:

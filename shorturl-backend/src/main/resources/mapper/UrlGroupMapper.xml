@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shorturl.mapper.UrlGroupMapper">
+
+    <resultMap id="BaseResultMap" type="com.shorturl.entity.UrlGroup">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="icon" property="icon"/>
+        <result column="color" property="color"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.shorturl.entity.UrlGroup" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO url_group (user_id, name, description, icon, color, sort_order, status, create_time, update_time)
+        VALUES (#{userId}, #{name}, #{description}, #{icon}, #{color}, #{sortOrder}, #{status}, NOW(), NOW())
+    </insert>
+
+    <update id="update" parameterType="com.shorturl.entity.UrlGroup">
+        UPDATE url_group
+        SET name = #{name},
+            description = #{description},
+            icon = #{icon},
+            color = #{color},
+            sort_order = #{sortOrder},
+            status = #{status},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM url_group
+        WHERE id = #{id}
+    </delete>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM url_group
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectListByUserId" resultMap="BaseResultMap">
+        SELECT * FROM url_group
+        WHERE user_id = #{userId} AND status = 1
+        ORDER BY sort_order ASC, create_time DESC
+    </select>
+
+    <select id="selectByUserIdAndName" resultMap="BaseResultMap">
+        SELECT * FROM url_group
+        WHERE user_id = #{userId} AND name = #{name} AND status = 1
+        LIMIT 1
+    </select>
+
+    <select id="selectUrlCountByGroupId" resultType="long">
+        SELECT COUNT(*) FROM url_mapping
+        WHERE group_id = #{groupId} AND status = 1
+    </select>
+
+</mapper>
+

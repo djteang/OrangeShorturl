@@ -43,6 +43,11 @@ export const userStore = reactive({
   // 是否已登录
   isLoggedIn() {
     return !!this.token
+  },
+  
+  // 是否为管理员
+  isAdmin() {
+    return this.user && this.user.role === 'admin'
   }
 })
 

@@ -104,6 +104,16 @@ export default {
   // 登出
   logout() {
     return api.post('/user/logout')
+  },
+
+  // 修改用户名
+  updateUsername(username) {
+    return api.put('/user/update-username', { username })
+  },
+
+  // 修改密码
+  changePassword(data) {
+    return api.put('/user/change-password', data)
   }
 }
 

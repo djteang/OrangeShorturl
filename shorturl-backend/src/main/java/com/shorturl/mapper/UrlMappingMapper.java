@@ -61,5 +61,21 @@ public interface UrlMappingMapper {
      * 检查短码是否存在
      */
     int existsByShortCode(@Param("shortCode") String shortCode);
+    
+    /**
+     * 根据用户ID和分组ID查询列表
+     */
+    List<UrlMapping> selectListByUserIdAndGroupId(@Param("userId") Long userId,
+                                                    @Param("groupId") Long groupId,
+                                                    @Param("keyword") String keyword,
+                                                    @Param("offset") Integer offset,
+                                                    @Param("limit") Integer limit);
+    
+    /**
+     * 根据用户ID和分组ID查询总数
+     */
+    Long selectCountByUserIdAndGroupId(@Param("userId") Long userId,
+                                        @Param("groupId") Long groupId,
+                                        @Param("keyword") String keyword);
 }
 

@@ -90,6 +90,7 @@ public class UserServiceImpl implements UserService {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .avatarBase64(user.getAvatarBase64())
+                .role(user.getRole())
                 .token(token)
                 .build();
     }
@@ -131,6 +132,7 @@ public class UserServiceImpl implements UserService {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .avatarBase64(user.getAvatarBase64())
+                .role(user.getRole())
                 .token(token)
                 .build();
     }
@@ -153,6 +155,7 @@ public class UserServiceImpl implements UserService {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .avatarBase64(user.getAvatarBase64())
+                .role(user.getRole())
                 .build();
     }
     
@@ -194,6 +197,7 @@ public class UserServiceImpl implements UserService {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .avatarBase64(user.getAvatarBase64())
+                .role(user.getRole())
                 .token(token)
                 .build();
     }
@@ -249,6 +253,7 @@ public class UserServiceImpl implements UserService {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .avatarBase64(user.getAvatarBase64())
+                .role(user.getRole())
                 .token(null)  // 不返回token
                 .build();
     }
@@ -257,6 +262,51 @@ public class UserServiceImpl implements UserService {
     public void logout(Long userId) {
         // 从Redis中删除Token
         tokenService.deleteToken(userId);
+    }
+    
+    @Override
+    public void updateUsername(Long userId, String username) {
+        // 检查用户名是否已存在
+        User existingUser = userMapper.selectByUsername(username);
+        if (existingUser != null && !existingUser.getId().equals(userId)) {
+            throw new RuntimeException("用户名已存在");
+        }
+        
+        // 更新用户名
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new RuntimeException("用户不存在");
+        }
+        
+        user.setUsername(username);
+        userMapper.update(user);
+    }
+    
+    @Override
+    public void changePassword(Long userId, String oldPassword, String newPassword) {
+        // 获取用户
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new RuntimeException("用户不存在");
+        }
+        
+        // 检查是否为OAuth登录用户
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new RuntimeException("OAuth登录用户无法修改密码");
+        }
+        
+        // 验证旧密码
+        String encryptedOldPassword = encryptPassword(oldPassword);
+        if (!encryptedOldPassword.equals(user.getPassword())) {
+            throw new RuntimeException("当前密码错误");
+        }
+        
+        // 加密新密码
+        String encryptedNewPassword = encryptPassword(newPassword);
+        
+        // 更新密码
+        user.setPassword(encryptedNewPassword);
+        userMapper.update(user);
     }
     
     /**

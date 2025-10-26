@@ -9,6 +9,11 @@ import Redirect from '../views/Redirect.vue'
 import Login from '../views/Login.vue'
 import OAuthCallback from '../views/OAuthCallback.vue'
 import VisitLogs from '../views/VisitLogs.vue'
+import UaBlacklist from '../views/UaBlacklist.vue'
+import TransitPage from '../views/TransitPage.vue'
+import AiConfig from '../views/AiConfig.vue'
+import ProfileSettings from '../views/ProfileSettings.vue'
+import UrlGroups from '../views/UrlGroups.vue'
 
 const routes = [
   {
@@ -31,6 +36,36 @@ const routes = [
     path: '/visit-logs',
     name: 'VisitLogs',
     component: VisitLogs,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/ua-blacklist',
+    name: 'UaBlacklist',
+    component: UaBlacklist,
+    meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: '/transit-page',
+    name: 'TransitPage',
+    component: TransitPage,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/ai-config',
+    name: 'AiConfig',
+    component: AiConfig,
+    meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: '/profile',
+    name: 'ProfileSettings',
+    component: ProfileSettings,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/url-groups',
+    name: 'UrlGroups',
+    component: UrlGroups,
     meta: { requiresAuth: true }
   },
   {
@@ -78,7 +113,17 @@ router.beforeEach((to, from, next) => {
         query: { redirect: to.fullPath }
       })
     } else {
-      next()
+      // 检查是否需要管理员权限
+      if (to.matched.some(record => record.meta.requiresAdmin)) {
+        if (!userStore.isAdmin()) {
+          // 不是管理员，跳转到首页
+          next('/')
+        } else {
+          next()
+        }
+      } else {
+        next()
+      }
     }
   } else {
     next()

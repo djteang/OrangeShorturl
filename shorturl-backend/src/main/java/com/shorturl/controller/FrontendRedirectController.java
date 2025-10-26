@@ -1,5 +1,6 @@
 package com.shorturl.controller;
 
+import com.shorturl.annotation.RateLimit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,9 @@ public class FrontendRedirectController {
     /**
      * 将 /r/{shortCode} 重定向到前端应用
      * 前端会显示Redirect.vue中转页面
+     * 限流：每个IP每分钟最多50次请求
      */
+    @RateLimit(key = "frontend_redirect", time = 60, count = 50, limitType = RateLimit.LimitType.IP)
     @GetMapping("/r/{shortCode}")
     public void redirectToFrontend(@PathVariable String shortCode, HttpServletResponse response) throws IOException {
         // 重定向到前端的对应路由

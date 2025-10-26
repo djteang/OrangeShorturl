@@ -35,6 +35,11 @@ public class UserResponse {
     private String avatarBase64;
     
     /**
+     * 用户角色
+     */
+    private String role;
+    
+    /**
      * Token
      */
     private String token;

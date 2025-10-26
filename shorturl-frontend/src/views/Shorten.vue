@@ -36,6 +36,22 @@
           </button>
 
           <div v-show="showAdvanced" class="mt-4 space-y-4">
+            <!-- 分组选择 -->
+            <div v-if="isLoggedIn">
+              <label class="block dark:text-slate-300 text-slate-700 text-sm font-semibold mb-2">
+                选择分组（可选）
+              </label>
+              <select
+                v-model="form.groupId"
+                class="w-full px-4 py-2 dark:bg-slate-800/70 bg-white border-2 dark:border-slate-600 border-slate-300 dark:text-slate-50 text-slate-900 rounded-lg focus:border-orange-500 focus:outline-none transition-all"
+              >
+                <option :value="null">未分组</option>
+                <option v-for="group in groups" :key="group.id" :value="group.id">
+                  {{ group.name }} ({{ group.urlCount }})
+                </option>
+              </select>
+            </div>
+
             <div>
               <label class="block dark:text-slate-300 text-slate-700 text-sm font-semibold mb-2">
                 自定义短码（可选）
@@ -58,6 +74,53 @@
                 type="datetime-local"
                 class="w-full px-4 py-2 dark:bg-slate-800/70 bg-white border-2 dark:border-slate-600 border-slate-300 dark:text-slate-50 text-slate-900 rounded-lg focus:border-orange-500 focus:outline-none transition-all"
               />
+            </div>
+
+            <!-- 二维码样式自定义 -->
+            <div>
+              <label class="block dark:text-slate-300 text-slate-700 text-sm font-semibold mb-2">
+                二维码样式自定义
+              </label>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs dark:text-slate-400 text-slate-600 mb-1">前景色</label>
+                  <input
+                    v-model="form.qrConfig.colorDark"
+                    type="color"
+                    class="w-full h-10 rounded-lg border-2 dark:border-slate-600 border-slate-300 cursor-pointer"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs dark:text-slate-400 text-slate-600 mb-1">背景色</label>
+                  <input
+                    v-model="form.qrConfig.colorLight"
+                    type="color"
+                    class="w-full h-10 rounded-lg border-2 dark:border-slate-600 border-slate-300 cursor-pointer"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs dark:text-slate-400 text-slate-600 mb-1">大小</label>
+                  <input
+                    v-model.number="form.qrConfig.size"
+                    type="number"
+                    min="100"
+                    max="500"
+                    class="w-full px-3 py-2 dark:bg-slate-800/70 bg-white border-2 dark:border-slate-600 border-slate-300 dark:text-slate-50 text-slate-900 rounded-lg focus:border-orange-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs dark:text-slate-400 text-slate-600 mb-1">容错率</label>
+                  <select
+                    v-model="form.qrConfig.correctLevel"
+                    class="w-full px-3 py-2 dark:bg-slate-800/70 bg-white border-2 dark:border-slate-600 border-slate-300 dark:text-slate-50 text-slate-900 rounded-lg focus:border-orange-500 focus:outline-none"
+                  >
+                    <option value="L">低(L)</option>
+                    <option value="M">中(M)</option>
+                    <option value="Q">高(Q)</option>
+                    <option value="H">最高(H)</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -123,15 +186,22 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, onMounted, computed } from 'vue'
 import QRCode from 'qrcode'
 import api from '../api'
-import { themeStore } from '../store'
+import { themeStore, userStore } from '../store'
 
 const form = ref({
   originalUrl: '',
   customCode: '',
-  expireTime: ''
+  expireTime: '',
+  groupId: null,
+  qrConfig: {
+    size: 200,
+    colorDark: '#1e293b',
+    colorLight: '#ffffff',
+    correctLevel: 'M'
+  }
 })
 
 const showAdvanced = ref(false)
@@ -140,6 +210,22 @@ const result = ref(null)
 const error = ref('')
 const copied = ref(false)
 const qrcodeCanvas = ref(null)
+const groups = ref([])
+
+const isLoggedIn = computed(() => userStore.isLoggedIn)
+
+// 加载分组列表
+const loadGroups = async () => {
+  if (!isLoggedIn.value) return
+  try {
+    const response = await api.getUrlGroups()
+    if (response.code === 200) {
+      groups.value = response.data || []
+    }
+  } catch (err) {
+    console.error('加载分组失败', err)
+  }
+}
 
 const handleSubmit = async () => {
   if (!form.value.originalUrl) {
@@ -174,24 +260,33 @@ const handleSubmit = async () => {
         String(date.getMinutes()).padStart(2, '0') + ':00'
     }
 
+    if (form.value.groupId) {
+      data.groupId = form.value.groupId
+    }
+
+    // 添加二维码配置
+    data.qrConfig = {
+      size: form.value.qrConfig.size,
+      colorDark: form.value.qrConfig.colorDark,
+      colorLight: form.value.qrConfig.colorLight,
+      correctLevel: form.value.qrConfig.correctLevel
+    }
+
     const response = await api.shorten(data)
     
     if (response.code === 200) {
       result.value = response.data
       await nextTick()
       if (qrcodeCanvas.value) {
-        // 根据当前主题设置二维码颜色
-        const qrColor = themeStore.isDark ? {
-          dark: '#1e293b',
-          light: '#f1f5f9'
-        } : {
-          dark: '#1e293b',
-          light: '#ffffff'
-        }
+        // 使用自定义的二维码配置
         QRCode.toCanvas(qrcodeCanvas.value, response.data.shortUrl, {
-          width: 200,
+          width: form.value.qrConfig.size,
           margin: 2,
-          color: qrColor
+          color: {
+            dark: form.value.qrConfig.colorDark,
+            light: form.value.qrConfig.colorLight
+          },
+          errorCorrectionLevel: form.value.qrConfig.correctLevel
         })
       }
     } else {
@@ -215,5 +310,9 @@ const copyToClipboard = async (text) => {
     console.error('复制失败', err)
   }
 }
+
+onMounted(() => {
+  loadGroups()
+})
 </script>
 

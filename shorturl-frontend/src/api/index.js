@@ -4,7 +4,7 @@ import toast from '../utils/toast'
 
 const api = axios.create({
   baseURL: '/api',
-  timeout: 10000
+  timeout: 60000
 })
 
 // 请求拦截器
@@ -79,6 +79,78 @@ export default {
   // 获取访问日志列表
   getVisitLogs(params) {
     return api.get('/visit-log/list', { params })
+  },
+
+  // UA黑名单管理
+  getUaBlacklist() {
+    return api.get('/ua-blacklist/list')
+  },
+
+  addUaBlacklist(data) {
+    return api.post('/ua-blacklist/add', data)
+  },
+
+  updateUaBlacklist(id, data) {
+    return api.put(`/ua-blacklist/update/${id}`, data)
+  },
+
+  deleteUaBlacklist(id) {
+    return api.delete(`/ua-blacklist/delete/${id}`)
+  },
+
+  toggleUaBlacklist(id) {
+    return api.put(`/ua-blacklist/toggle/${id}`)
+  },
+
+  // 自定义中转页管理
+  getTransitPage() {
+    return api.get('/transit')
+  },
+
+  saveTransitPage(data) {
+    return api.post('/transit/save', data)
+  },
+
+  toggleTransitPage() {
+    return api.put('/transit/toggle')
+  },
+
+  deleteTransitPage() {
+    return api.delete('/transit')
+  },
+
+  getTransitPageByShortCode(shortCode) {
+    return api.get(`/transit/info/${shortCode}`)
+  },
+
+  // AI配置管理（仅管理员）
+  getAiConfig() {
+    return api.get('/admin/ai-config')
+  },
+
+  saveAiConfig(data) {
+    return api.post('/admin/ai-config/save', data)
+  },
+
+  testAiConfig(data) {
+    return api.post('/admin/ai-config/test', data)
+  },
+
+  // 链接分组管理
+  getUrlGroups() {
+    return api.get('/url-group/list')
+  },
+
+  createUrlGroup(data) {
+    return api.post('/url-group/create', data)
+  },
+
+  updateUrlGroup(groupId, data) {
+    return api.put(`/url-group/update/${groupId}`, data)
+  },
+
+  deleteUrlGroup(groupId) {
+    return api.delete(`/url-group/delete/${groupId}`)
   }
 }
 

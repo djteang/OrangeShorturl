@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shorturl.mapper.TransitPageMapper">
+    
+    <resultMap id="BaseResultMap" type="com.shorturl.entity.TransitPage">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="wait_time" property="waitTime"/>
+        <result column="background_color" property="backgroundColor"/>
+        <result column="text_color" property="textColor"/>
+        <result column="button_color" property="buttonColor"/>
+        <result column="powered_by_name" property="poweredByName"/>
+        <result column="powered_by_icon" property="poweredByIcon"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT id, user_id, title, content, wait_time, 
+               background_color, text_color, button_color,
+               powered_by_name, powered_by_icon,
+               status, create_time, update_time
+        FROM transit_page
+        WHERE user_id = #{userId}
+    </select>
+    
+    <insert id="insert" parameterType="com.shorturl.entity.TransitPage" 
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO transit_page (
+            user_id, title, content, wait_time,
+            background_color, text_color, button_color,
+            powered_by_name, powered_by_icon, status
+        ) VALUES (
+            #{userId}, #{title}, #{content}, #{waitTime},
+            #{backgroundColor}, #{textColor}, #{buttonColor},
+            #{poweredByName}, #{poweredByIcon}, #{status}
+        )
+    </insert>
+    
+    <update id="update" parameterType="com.shorturl.entity.TransitPage">
+        UPDATE transit_page
+        SET title = #{title},
+            content = #{content},
+            wait_time = #{waitTime},
+            background_color = #{backgroundColor},
+            text_color = #{textColor},
+            button_color = #{buttonColor},
+            powered_by_name = #{poweredByName},
+            powered_by_icon = #{poweredByIcon},
+            status = #{status}
+        WHERE user_id = #{userId}
+    </update>
+    
+    <update id="updateStatus">
+        UPDATE transit_page
+        SET status = #{status}
+        WHERE user_id = #{userId}
+    </update>
+    
+    <delete id="deleteByUserId">
+        DELETE FROM transit_page
+        WHERE user_id = #{userId}
+    </delete>
+    
+</mapper>
+
