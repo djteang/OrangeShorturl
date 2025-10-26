@@ -81,6 +81,11 @@ export default {
     return api.get('/visit-log/list', { params })
   },
 
+  // 获取全局统计数据
+  getGlobalStats() {
+    return api.get('/visit-log/stats')
+  },
+
   // UA黑名单管理
   getUaBlacklist() {
     return api.get('/ua-blacklist/list')

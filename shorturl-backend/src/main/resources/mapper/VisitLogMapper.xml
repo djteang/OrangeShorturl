@@ -116,5 +116,86 @@
         LIMIT 10
     </select>
 
+    <!-- 全局统计查询 -->
+    <select id="countTotalVisits" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM visit_log
+    </select>
+
+    <select id="countTodayVisits" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM visit_log
+        WHERE DATE(visit_time) = CURDATE()
+    </select>
+
+    <select id="countYesterdayVisits" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM visit_log
+        WHERE DATE(visit_time) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+    </select>
+
+    <select id="selectDailyTrends" resultType="map">
+        SELECT 
+            DATE_FORMAT(visit_time, '%Y-%m-%d') as date,
+            COUNT(*) as count
+        FROM visit_log
+        WHERE visit_time >= DATE_SUB(NOW(), INTERVAL #{days} DAY)
+        GROUP BY DATE_FORMAT(visit_time, '%Y-%m-%d')
+        ORDER BY date ASC
+    </select>
+
+    <select id="selectLocationStats" resultType="map">
+        SELECT 
+            CONCAT(
+                COALESCE(province, '未知'),
+                IF(city IS NOT NULL AND city != '', CONCAT(' ', city), '')
+            ) as location,
+            COUNT(*) as count
+        FROM visit_log
+        GROUP BY province, city
+        ORDER BY count DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectDeviceStats" resultType="map">
+        SELECT 
+            COALESCE(device_type, '未知') as deviceType,
+            COUNT(*) as count
+        FROM visit_log
+        GROUP BY device_type
+        ORDER BY count DESC
+    </select>
+
+    <select id="selectBrowserStats" resultType="map">
+        SELECT 
+            COALESCE(browser, '未知') as browser,
+            COUNT(*) as count
+        FROM visit_log
+        GROUP BY browser
+        ORDER BY count DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectOsStats" resultType="map">
+        SELECT 
+            COALESCE(os, '未知') as os,
+            COUNT(*) as count
+        FROM visit_log
+        GROUP BY os
+        ORDER BY count DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectTopUrls" resultType="map">
+        SELECT 
+            um.short_code as shortCode,
+            um.original_url as originalUrl,
+            COUNT(vl.id) as visitCount
+        FROM url_mapping um
+        LEFT JOIN visit_log vl ON um.short_code = vl.short_code
+        GROUP BY um.short_code, um.original_url
+        ORDER BY visitCount DESC
+        LIMIT #{limit}
+    </select>
+
 </mapper>
 

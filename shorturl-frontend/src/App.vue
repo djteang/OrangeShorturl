@@ -42,6 +42,16 @@
               </router-link>
               <router-link 
                 v-if="userStore.isAdmin()"
+                to="/statistics" 
+                class="dark:text-slate-300 text-slate-600 dark:hover:text-slate-50 hover:text-slate-900 dark:hover:bg-slate-700/70 hover:bg-slate-200 px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1"
+                :class="{'dark:bg-slate-700 dark:text-slate-50 dark:border dark:border-slate-600 bg-slate-200 text-slate-900 border border-slate-300': $route.path === '/statistics'}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                访问统计
+              </router-link>
+              <router-link 
+                v-if="userStore.isAdmin()"
                 to="/ai-config" 
                 class="dark:text-slate-300 text-slate-600 dark:hover:text-slate-50 hover:text-slate-900 dark:hover:bg-slate-700/70 hover:bg-slate-200 px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1"
                 :class="{'dark:bg-slate-700 dark:text-slate-50 dark:border dark:border-slate-600 bg-slate-200 text-slate-900 border border-slate-300': $route.path === '/ai-config'}">
@@ -259,8 +269,9 @@
       <transition name="mobile-menu">
         <div 
           v-if="showMobileMenu && !isStandalonePage"
-          class="md:hidden absolute top-16 left-0 right-0 glass-effect border-b dark:border-slate-600 border-slate-300 shadow-lg">
+          class="md:hidden absolute top-16 left-0 right-0 glass-effect border-b dark:border-slate-600 border-slate-300 shadow-lg max-h-[calc(100vh-4rem)] overflow-y-auto">
           <div class="px-4 py-4 space-y-2">
+            <!-- 基础菜单 -->
             <router-link 
               to="/" 
               @click="closeMobileMenu"
@@ -283,14 +294,55 @@
               API文档
             </router-link>
             
+            <!-- 管理员菜单 -->
+            <template v-if="userStore.isAdmin()">
+              <div class="pt-2 pb-1 px-4">
+                <div class="text-xs font-semibold dark:text-slate-500 text-slate-500 uppercase tracking-wider">管理功能</div>
+              </div>
+              <router-link 
+                to="/ua-blacklist" 
+                @click="closeMobileMenu"
+                class="block dark:text-slate-300 text-slate-600 dark:hover:bg-slate-700/70 hover:bg-slate-200 px-4 py-3 rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+                :class="{'dark:bg-slate-700 dark:text-slate-50 bg-slate-200 text-slate-900': $route.path === '/ua-blacklist'}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                </svg>
+                UA屏蔽
+              </router-link>
+              <router-link 
+                to="/statistics" 
+                @click="closeMobileMenu"
+                class="block dark:text-slate-300 text-slate-600 dark:hover:bg-slate-700/70 hover:bg-slate-200 px-4 py-3 rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+                :class="{'dark:bg-slate-700 dark:text-slate-50 bg-slate-200 text-slate-900': $route.path === '/statistics'}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                访问统计
+              </router-link>
+              <router-link 
+                to="/ai-config" 
+                @click="closeMobileMenu"
+                class="block dark:text-slate-300 text-slate-600 dark:hover:bg-slate-700/70 hover:bg-slate-200 px-4 py-3 rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+                :class="{'dark:bg-slate-700 dark:text-slate-50 bg-slate-200 text-slate-900': $route.path === '/ai-config'}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                AI配置
+              </router-link>
+            </template>
+            
+            <!-- 用户菜单 -->
+            
+            
             <!-- 移动端登录按钮 -->
-            <router-link 
-              v-if="!userStore.isLoggedIn()" 
-              to="/login" 
-              @click="closeMobileMenu"
-              class="block px-4 py-3 bg-orange-600 hover:bg-orange-500 text-white text-sm font-semibold rounded-lg transition-all text-center">
-              登录
-            </router-link>
+            <div v-if="!userStore.isLoggedIn()" class="pt-2">
+              <router-link 
+                to="/login" 
+                @click="closeMobileMenu"
+                class="block px-4 py-3 bg-orange-600 hover:bg-orange-500 text-white text-sm font-semibold rounded-lg transition-all text-center">
+                登录
+              </router-link>
+            </div>
           </div>
         </div>
       </transition>

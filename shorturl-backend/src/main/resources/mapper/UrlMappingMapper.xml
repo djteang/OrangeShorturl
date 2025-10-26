@@ -109,5 +109,9 @@
         </if>
     </select>
 
+    <select id="selectTotalCount" resultType="long">
+        SELECT COUNT(*) FROM url_mapping WHERE status = 1
+    </select>
+
 </mapper>
 

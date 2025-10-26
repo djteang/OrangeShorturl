@@ -9,6 +9,7 @@ import Redirect from '../views/Redirect.vue'
 import Login from '../views/Login.vue'
 import OAuthCallback from '../views/OAuthCallback.vue'
 import VisitLogs from '../views/VisitLogs.vue'
+import Statistics from '../views/Statistics.vue'
 import UaBlacklist from '../views/UaBlacklist.vue'
 import TransitPage from '../views/TransitPage.vue'
 import AiConfig from '../views/AiConfig.vue'
@@ -37,6 +38,12 @@ const routes = [
     name: 'VisitLogs',
     component: VisitLogs,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/statistics',
+    name: 'Statistics',
+    component: Statistics,
+    meta: { requiresAuth: true, requiresAdmin: true }
   },
   {
     path: '/ua-blacklist',

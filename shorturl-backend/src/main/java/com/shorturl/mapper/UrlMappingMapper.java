@@ -77,5 +77,10 @@ public interface UrlMappingMapper {
     Long selectCountByUserIdAndGroupId(@Param("userId") Long userId,
                                         @Param("groupId") Long groupId,
                                         @Param("keyword") String keyword);
+    
+    /**
+     * 查询全局短链接总数
+     */
+    Long selectTotalCount();
 }
 

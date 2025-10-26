@@ -62,5 +62,50 @@ public interface VisitLogMapper {
      * 查询操作系统统计
      */
     List<Map<String, Object>> selectOsStats(@Param("shortCode") String shortCode);
+    
+    /**
+     * 统计总访问次数（全局）
+     */
+    Long countTotalVisits();
+    
+    /**
+     * 统计今日访问次数（全局）
+     */
+    Long countTodayVisits();
+    
+    /**
+     * 统计昨日访问次数（全局）
+     */
+    Long countYesterdayVisits();
+    
+    /**
+     * 查询最近N天的访问趋势（全局）
+     */
+    List<Map<String, Object>> selectDailyTrends(@Param("days") Integer days);
+    
+    /**
+     * 查询地域统计（全局）
+     */
+    List<Map<String, Object>> selectLocationStats(@Param("limit") Integer limit);
+    
+    /**
+     * 查询设备类型统计（全局）
+     */
+    List<Map<String, Object>> selectDeviceStats();
+    
+    /**
+     * 查询浏览器统计（全局）
+     */
+    List<Map<String, Object>> selectBrowserStats(@Param("limit") Integer limit);
+    
+    /**
+     * 查询操作系统统计（全局）
+     */
+    List<Map<String, Object>> selectOsStats(@Param("limit") Integer limit);
+    
+    /**
+     * 查询访问量Top N的短链接（全局）
+     */
+    List<Map<String, Object>> selectTopUrls(@Param("limit") Integer limit);
 }
 

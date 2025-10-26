@@ -1,5 +1,6 @@
 package com.shorturl.controller;
 
+import com.shorturl.dto.GlobalStatsResponse;
 import com.shorturl.dto.PageResult;
 import com.shorturl.dto.Result;
 import com.shorturl.entity.VisitLog;
@@ -28,6 +29,19 @@ public class VisitLogController {
         try {
             PageResult<VisitLog> result = visitLogService.getVisitLogList(page, size, shortCode);
             return Result.success(result);
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
+    
+    /**
+     * 获取全局统计数据（需要登录）
+     */
+    @GetMapping("/stats")
+    public Result<GlobalStatsResponse> getStats() {
+        try {
+            GlobalStatsResponse stats = visitLogService.getGlobalStats();
+            return Result.success(stats);
         } catch (Exception e) {
             return Result.error(e.getMessage());
         }
